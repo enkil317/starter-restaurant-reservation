@@ -1,119 +1,139 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { today } from "../utils/date-time"
+import {useHistory} from "react-router-dom";
 
-function FormReservation({ setReservation, submitHandler, reservation }) {
-  const initialFormState = {
-    "first_name": "",
-    "last_name": "",
-    "mobile_number": "",
-    "reservation_date": "",
-    "reservation_time": "",
-    "people": 0
-  }
-  const [formData, setFormData] = useState(...initialFormState); 
+function FormReservation({
+  submitHandler,
+  initialState = {
+    first_name: "",
+    last_name: "",
+    mobile_number: "",
+    reservation_date: today(),
+    reservation_time: "",
+    people: "1",
+    status: "booked",
+  },
+}) {
+  const [reservation, setReservation] = useState(initialState);
   const history = useHistory();
- 
+
   function changeHandler({ target: { name, value } }) {
-    setFormData({
-      ...formData,
-      [name]: value, 
-    })
+    setReservation((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   }
 
-  const cancelHandler = () => {
-    history.push("/");
-  };
+  function handleSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    submitHandler(reservation);
+  }
 
   return (
-    <>
-      <form onSubmit={submitHandler}>
+    <div>
+      <form onSubmit={handleSubmit} className="deck-edit">
         <fieldset>
-          <div className="d-flex text-center flex-wrap justify-content-center">
-            <div className="col-12">
-                <h2>Please Enter Reservation Information</h2>
+          <div className="row">
+            <div className="form-group col">
+              <label htmlFor="first_name">First Name</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                className="form-control"
+                value={reservation.first_name}
+                required={true}
+                placeholder="First Name"
+                onChange={changeHandler}
+              />
             </div>
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              className="col-md-6 my-1 mx-1"
-              placeholder="First Name"
-              require="true"
-              value={formData.first_name}
-              onChange={changeHandler}
-            />
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              className="col-md-6 my-1 mx-1"
-              placeholder="Last Name"
-              require="true"
-              value={formData.last_name}
-              onChange={changeHandler}
-            />
-
-            <input
-              type="text"
-              id="mobile_number"
-              name="mobile_number"
-              className="col-md-6 my-1 mx-1"
-              placeholder="Mobile Number"
-              require="true"
-              value={formData.mobile_number}
-              onChange={changeHandler}
-            />
-            <input
-              type="number"
-              id="people"
-              name="people"
-              className="col-md-6 my-1 mx-1"
-              placeholder="Number Of People In Party"
-              require="true"
-              value={formData.people}
-              onChange={changeHandler}
-            />
-
-            <input
-              type="date"
-              id="reservation_date"
-              name="reservation_date"
-              className="col-md-6 my-1 mx-1"
-              require="true"
-              value={formData.reservation_date}
-              onChange={changeHandler}
-            />
-            <input
-              type="time"
-              id="reservation_time"
-              name="reservation_time"
-              className="col-md-6 my-1 mx-1"
-              require="true"
-              value={formData.reservation_time}
-              onChange={changeHandler}
-            />
+            <div className="form-group col">
+              <label htmlFor="last_name">Last Name</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                className="form-control"
+                value={reservation.last_name}
+                required={true}
+                placeholder="Last Name"
+                onChange={changeHandler}
+              />
+            </div>
+            <div className="form-group col">
+              <label htmlFor="mobile_number">Mobile number</label>
+              <input
+                type="text"
+                id="mobile_number"
+                name="mobile_number"
+                className="form-control"
+                value={reservation.mobile_number}
+                required={true}
+                placeholder="000-000-0000"
+                // minLength="10" saving this for real live version, it currently breaks tests
+                maxLength="12"
+                onChange={changeHandler}
+              />
+              <small>Area code required</small>
+            </div>
           </div>
+          <div className="row">
 
-          <div className="row justify-content-around">
-            <button
-              type="submit"
-              className="btn btn-secondary my-2 col-5"
-              onClick={submitHandler}
-            >
-              Submit
-            </button>
-
-            <button
-              type="cancel"
-              className="btn btn-secondary  my-2 text-light col-5"
-              onClick={cancelHandler}
-            >
-              Cancel
-            </button>
+            <div className="form-group col">
+              <label htmlFor="reservation_date">Reservation date</label>
+              <input
+                type="date"
+                id="reservation_date"
+                name="reservation_date"
+                className="form-control"
+                value={reservation.reservation_date}
+                required={true}
+                onChange={changeHandler}
+              />
+              <small>Note: we are closed on Tuesdays</small>
+            </div>
+            <div className="form-group col">
+              <label htmlFor="reservation_time">Reservation time</label>
+              <input
+                type="time"
+                id="reservation_time"
+                name="reservation_time"
+                className="form-control"
+                value={reservation.reservation_time}
+                required={true}
+                placeholder="Reservation time"
+                onChange={changeHandler}
+              />
+            </div>
+            <div className="form-group col">
+              <label htmlFor="people">Number in your party</label>
+              <input
+                type="number"
+                id="people"
+                name="people"
+                className="form-control"
+                value={reservation.people}
+                required={true}
+                placeholder="# in your party"
+                min="1"
+                onChange={changeHandler}
+              />
+            </div>
           </div>
+          <button
+            type="button"
+            className="btn btn-secondary mr-2"
+            onClick={() => history.goBack()}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </fieldset>
       </form>
-    </>
+    </div>
   );
 }
 

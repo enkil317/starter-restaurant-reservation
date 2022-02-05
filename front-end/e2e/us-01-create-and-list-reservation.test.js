@@ -46,7 +46,6 @@ describe("US-01 - Create and list reservations - E2E", () => {
         path: ".screenshots/us-01-submit-before.png",
         fullPage: true,
       });
-
       await Promise.all([
         page.click("[type=submit]"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
