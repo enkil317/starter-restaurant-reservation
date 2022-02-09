@@ -110,7 +110,7 @@ function validateNewTable(req, res, next) {
 }
 
 module.exports = {
-  list: asyncErrorBoundary(list),
+  list: [asyncErrorBoundary(list)],
   create: [validateNewTable, asyncErrorBoundary(create)],
   seat: [
     asyncErrorBoundary(tableExists),

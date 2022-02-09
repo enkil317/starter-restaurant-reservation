@@ -3,7 +3,7 @@ import { formatAsTime } from "../utils/date-time";
 import { Link } from "react-router-dom";
 import ReservationButtons from "../reservations/ReservationButtons";
 
-function ReservationList({ reservations, isToday }) {
+function ReservationList({ reservations }) {
   
   function addDashes(phoneNumber) {
     phoneNumber = phoneNumber.replace(/[^0-9.]/g, "");
